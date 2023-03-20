@@ -31,6 +31,17 @@ namespace GradeBook.GradeBooks
             };
         }
 
+        public override void CalculateStatistics()
+        {
+            if (Students.Count < 5)
+            {
+                Console.WriteLine("Ranked grading requires a minimum of 5 students");
+                return;
+            }
+
+            base.CalculateStatistics();
+        }
+
         private List<double> GetAverageGrades() => Students.Select(student => student.AverageGrade).ToList();
 
         private static double GetValuePercentageRanking<T>(T value, List<T> values) where T : IComparable<T>
