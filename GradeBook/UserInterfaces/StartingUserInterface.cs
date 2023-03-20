@@ -34,7 +34,7 @@ namespace GradeBook.UserInterfaces
         public static void CreateCommand(string command)
         {
             var parts = command.Split(' ');
-            if (parts.Length != 4 && parts[3] is not "true" and not "false")
+            if (parts.Length != 4 || parts[3] is not "true" and not "false")
             {
                 Console.WriteLine("Command not valid, Create requires a name, type of gradebook, if it's weighted (true / false).");
                 return;
