@@ -34,18 +34,18 @@ namespace GradeBook.UserInterfaces
         public static void CreateCommand(string command)
         {
             var parts = command.Split(' ');
-            if (parts.Length != 3)
+            if (parts.Length != 4 && parts[3] is not "true" and not "false")
             {
-                Console.WriteLine("Command not valid, Create requires a name and type of gradebook.");
+                Console.WriteLine("Command not valid, Create requires a name, type of gradebook, if it's weighted (true / false).");
                 return;
             }
 
-            (string name, string type) = (parts[1], parts[2]);
+            (string name, string type, bool isWeighted) = (parts[1], parts[2], parts[3] == "true");
 
-            BaseGradeBook gradeBook = type.ToLower() switch
+            BaseGradeBook gradeBook = parts[3].ToLower() switch
             {
-                "standard" => new StandardGradeBook(name),
-                "ranked" => new RankedGradeBook(name),
+                "standard" => new StandardGradeBook(name, isWeighted),
+                "ranked" => new RankedGradeBook(name, isWeighted),
                 _ => null
             };
             
