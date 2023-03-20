@@ -18,21 +18,10 @@ namespace GradeBook.GradeBooks
                 throw new InvalidOperationException("Ranked grading requires a minimum of 5 students");
             }
 
-            List<double> gradesRank = GetAverageGradesSorted();
+            List<double> averageGrades = GetAverageGrades();
+            double percentageRanking = GetValuePercentageRanking(averageGrade, averageGrades);
 
-            int gradeRank = 0;
-            for (int i = 1; i < gradesRank.Count; i++)
-            {
-                if (gradesRank[i] > averageGrade)
-                {
-                    gradeRank = gradesRank.Count - i + 1;
-                    break;
-                }
-            }
-
-            double percentageIndex = (double)gradeRank / gradesRank.Count * 100;
-
-            char letterGrade = percentageIndex switch
+            return percentageRanking switch
             {
                 <= 20 => 'A',
                 <= 40 => 'B',
@@ -40,14 +29,25 @@ namespace GradeBook.GradeBooks
                 <= 80 => 'D',
                 _ => 'F'
             };
-
-            return letterGrade;
         }
 
-        private List<double> GetAverageGradesSorted()
+        private List<double> GetAverageGrades() => Students.Select(student => student.AverageGrade).ToList();
+
+        private static double GetValuePercentageRanking<T>(T value, List<T> values) where T : IComparable<T>
         {
-            List<double> averageGrades = Students.Select(student => student.AverageGrade).ToList();
-            return averageGrades.OrderBy(el => el).ToList();
+            List<T> orderedValues = values.OrderBy(el => el).ToList();
+
+            double GetPercentageFromIndex(int index) => (double)(values.Count - index) / values.Count * 100;
+
+            for (int i = 0; i < orderedValues.Count - 1; i++)
+            {
+                if (orderedValues[i + 1].CompareTo(value) > 0)
+                {
+                    return GetPercentageFromIndex(i);
+                }
+            }
+
+            return 0;
         }
     }
 }
